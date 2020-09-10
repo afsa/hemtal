@@ -16,11 +16,11 @@ chmod +x hemtal.py
 ## How to move solutions
 
 ```shell script
-./hemtal move <PATH TO SOLUTIONS> <DESTINATION PATH>
+./hemtal.py move <PATH TO SOLUTIONS> <DESTINATION PATH>
 ```
 
 ## How to send emails to students
 
 ```shell script
-./hemtal email <PATH TO SOLUTIONS>
+./hemtal.py email <PATH TO SOLUTIONS>
 ```
