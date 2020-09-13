@@ -31,7 +31,7 @@ def parse_arguments():
     args = parser.parse_args()
 
     # Enable logging
-    logger = logging.getLogger("cctv")
+    logger = logging.getLogger('hemtal')
     logger.setLevel(logging.DEBUG if args.verbose else logging.INFO)
     console_stream = logging.StreamHandler()
     console_stream.setFormatter(logging.Formatter('%(message)s'))
@@ -105,25 +105,26 @@ def send_email(args, logger):
 
     num_email = 0
 
-    for solution in solutions:
+    with smtplib.SMTP_SSL('smtp.{}'.format(domain)) as s:
+        s.set_debuglevel(args.verbose)
+        s.login(user, password)
 
-        # Get email from files
-        to_email = (solution.split('-')[-1])[:-4]
+        for solution in solutions:
+            # Get email from files
+            to_email = (solution.split('-')[-1])[:-4]
 
-        msg = EmailMessage()
-        msg['Subject'] = subject
-        msg['From'] = from_email
-        msg['To'] = to_email
-        msg.set_content(content)
+            msg = EmailMessage()
+            msg['Subject'] = subject
+            msg['From'] = from_email
+            msg['To'] = to_email
+            msg.set_content(content)
 
-        # Add attachment
-        with open(os.path.join(str(inp), solution), 'rb') as fp:
-            data = fp.read()
-            msg.add_attachment(data, filename=solution, maintype='application', subtype='pdf')
+            # Add attachment
+            with open(os.path.join(str(inp), solution), 'rb') as fp:
+                data = fp.read()
+                msg.add_attachment(data, filename=solution, maintype='application', subtype='pdf')
 
-        with smtplib.SMTP_SSL('smtp.{}'.format(domain)) as s:
-            s.set_debuglevel(args.verbose)
-            s.login(user, password)
+            # Send email
             s.send_message(msg)
             num_email += 1
 
