@@ -7,7 +7,7 @@ from email.message import EmailMessage
 from getpass import getpass
 from pathlib import Path
 from shutil import copyfile
-
+from pdb import set_trace as db
 
 def parse_arguments():
     # Parse command line arguments
@@ -55,17 +55,18 @@ def move_solutions(args, logger):
         return
 
     # Get all subdirs
-    dirs = [o for o in os.listdir(inp) if os.path.isdir(os.path.join(inp, o))]
+    # db()
+    dirs = [o for o in os.listdir(str(inp)) if os.path.isdir(os.path.join(str(inp), o))]
 
     num_sol = 0
 
     for solution in dirs:
-        solution_file = os.path.join(inp, solution, '0.pdf')
-        output_file = os.path.join(out, '{}.pdf'.format(solution))
+        solution_file = os.path.join(str(inp), solution, '0.pdf')
+        output_file = os.path.join(str(out), '{}.pdf'.format(solution))
 
         # Inform user that solution does not exist
         if not os.path.exists(solution_file):
-            logger.warning('WARNING: {} does not exist'.format(solution_file))
+            logger.warning('WARNING: {} does not exist OR THE STUDENT SENT A .png FILE :)'.format(solution_file))
             continue
 
         # Inform user that solution is already copied
@@ -76,7 +77,7 @@ def move_solutions(args, logger):
         copyfile(solution_file, output_file)
         num_sol += 1
 
-    logger.info('Successfully moved {} solutions to {}'.format(num_sol, out))
+    logger.info('Successfully moved {} solutions to {}'.format(num_sol, str(out)))
 
 
 def send_email(args, logger):
@@ -101,7 +102,7 @@ def send_email(args, logger):
 
     password = getpass('Password: ')
 
-    solutions = [o for o in os.listdir(inp) if not os.path.isdir(os.path.join(inp, o)) and o.endswith('.pdf')]
+    solutions = [o for o in os.listdir(str(inp)) if not os.path.isdir(os.path.join(str(inp), o)) and o.endswith('.pdf')]
 
     num_email = 0
 
@@ -117,7 +118,7 @@ def send_email(args, logger):
         msg.set_content(content)
 
         # Add attachment
-        with open(os.path.join(inp, solution), 'rb') as fp:
+        with open(os.path.join(str(inp), solution), 'rb') as fp:
             data = fp.read()
             msg.add_attachment(data, filename=solution, maintype='application', subtype='pdf')
 
