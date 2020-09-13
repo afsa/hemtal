@@ -7,7 +7,7 @@ from email.message import EmailMessage
 from getpass import getpass
 from pathlib import Path
 from shutil import copyfile
-from pdb import set_trace as db
+
 
 def parse_arguments():
     # Parse command line arguments
@@ -55,7 +55,6 @@ def move_solutions(args, logger):
         return
 
     # Get all subdirs
-    # db()
     dirs = [o for o in os.listdir(str(inp)) if os.path.isdir(os.path.join(str(inp), o))]
 
     num_sol = 0
